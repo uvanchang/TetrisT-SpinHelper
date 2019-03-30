@@ -5,6 +5,7 @@ function GameManager(){
     var nextCanvas3 = document.getElementById('next-canvas3');
     var nextCanvas4 = document.getElementById('next-canvas4');
     var nextCanvas5 = document.getElementById('next-canvas5');
+    var holdCanvas = document.getElementById('hold-canvas');
     var scoreContainer = document.getElementById("score-container");
     var resetButton = document.getElementById('reset-button');
     var gridContext = gridCanvas.getContext('2d');
@@ -14,6 +15,7 @@ function GameManager(){
     var nextContext4 = nextCanvas4.getContext('2d');
     var nextContext5 = nextCanvas5.getContext('2d');
     var nextContexts = [nextContext, nextContext2, nextContext3, nextContext4, nextContext5];
+    var holdContext = holdCanvas.getContext('2d');
     document.addEventListener('keydown', onKeyDown);
 
     var grid = new Grid(22, 10);
@@ -26,6 +28,8 @@ function GameManager(){
     var gravityTimer = new Timer(onGravityTimerTick, 500);
     var score = 0;
     var isPaused = false;
+    var hold = false;
+    var holdPiece = null;
 
     // Graphics
     function intToRGBHexString(v){
@@ -108,6 +112,26 @@ function GameManager(){
       }
     }
 
+    function redrawHoldCanvas() {
+        holdContext.save();
+
+        holdContext.clearRect(0, 0, holdCanvas.width, holdCanvas.height);
+        var xOffset = holdPiece.dimension == 2 ? 20 : holdPiece.dimension == 3 ? 10 : holdPiece.dimension == 4 ? 0 : null;
+        var yOffset = holdPiece.dimension == 2 ? 20 : holdPiece.dimension == 3 ? 20 : holdPiece.dimension == 4 ? 10 : null;
+        for(var r = 0; r < holdPiece.dimension; r++){
+            for(var c = 0; c < holdPiece.dimension; c++){
+                if (holdPiece.cells[r][c] != 0){
+                    holdContext.fillStyle = intToRGBHexString(holdPiece.cells[r][c]);
+                    holdContext.fillRect(xOffset + 20 * c, yOffset + 20 * r, 20, 20);
+                    holdContext.strokeStyle = "#FFFFFF";
+                    holdContext.strokeRect(xOffset + 20 * c, yOffset + 20 * r, 20, 20);
+                }
+            }
+        }
+
+        holdContext.restore();
+    }
+
     function updateScoreContainer(){
         scoreContainer.innerHTML = score.toString();
     }
@@ -147,6 +171,7 @@ function GameManager(){
 
     // Process start of turn
     function startTurn(){
+        hold = false;
         // Shift working pieces
         for(var i = 0; i < workingPieces.length - 1; i++){
             workingPieces[i] = workingPieces[i + 1];
@@ -214,6 +239,27 @@ function GameManager(){
             return;
         }
         switch(event.which){
+            case 16: // shift
+              if (!hold) {
+                if (holdPiece !== null) {
+                    var temp = holdPiece;
+                    holdPiece = workingPiece;
+                    workingPiece = temp;
+                }
+                else {
+                    holdPiece = workingPieces[0];
+                    workingPiece = workingPieces[1];
+                    workingPieces[1] = rpg.nextPiece();
+                }
+                redrawNextCanvas();
+                redrawGridCanvas();
+                redrawHoldCanvas();
+                hold = true;
+              }
+              else {
+                  alert("Only 1 hold!");
+              }
+            break;
             case 80: // p
               if (!this.isPaused) {
                 gravityTimer.pause();
