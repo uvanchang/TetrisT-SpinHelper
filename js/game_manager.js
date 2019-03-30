@@ -10,13 +10,16 @@ function GameManager(){
 
     var grid = new Grid(22, 10);
     var rpg = new RandomPieceGenerator();
+    var tspin = new Tspin();
     var ai = new AI(0.510066, 0.760666, 0.35663, 0.184483);
     var workingPieces = [null, rpg.nextPiece()];
     var workingPiece = null;
+    var ghostPiece = null;
     var isAiActive = true;
     var isKeyEnabled = false;
     var gravityTimer = new Timer(onGravityTimerTick, 500);
     var score = 0;
+    var isPaused = false;
 
     // Graphics
     function intToRGBHexString(v){
@@ -52,6 +55,8 @@ function GameManager(){
                 }
             }
         }
+
+        // TODO: Draw ghost piece
 
         gridContext.restore();
     }
@@ -152,6 +157,12 @@ function GameManager(){
         // Clear lines
         score += grid.clearLines();
 
+        // Check for tspin opportunity
+        if (tspin.goodOpportunity(grid)) {
+          console.log("opportunity found");
+          ghostPiece = tspin.ghostPiece();
+        }
+
         // Refresh graphics
         redrawGridCanvas();
         updateScoreContainer();
@@ -190,6 +201,17 @@ function GameManager(){
             return;
         }
         switch(event.which){
+            case 80: // p
+              if (!this.isPaused) {
+                gravityTimer.pause();
+                this.isPaused = true;
+                console.log("paused");
+              } else {
+                gravityTimer.unPause();
+                this.isPaused = false;
+                console.log("unpaused");
+              }
+              break;
             case 32: // spacebar
                 isKeyEnabled = false;
                 gravityTimer.stop(); // Stop gravity

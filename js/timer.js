@@ -1,10 +1,13 @@
 function Timer(callback, delay) {
     var lastUpdate = null;
     var isRunning = false;
+    var isPaused = false;
 
     var loop = function(){
+      if (!isPaused) {
         requestAnimationFrame(function(){
             var now = Date.now();
+
             if(!isRunning){
                 lastUpdate = now;
                 loop();
@@ -17,6 +20,7 @@ function Timer(callback, delay) {
                 loop();
             }
         });
+      }
     };
 
     this.start = function() {
@@ -29,6 +33,14 @@ function Timer(callback, delay) {
 
     this.stop = function() {
         isRunning = false;
+    }
+
+    this.pause = function() {
+        isPaused = true;
+    }
+    this.unPause = function() {
+        isPaused = false;
+        loop();
     }
 
     this.reset = function(newDelay) {

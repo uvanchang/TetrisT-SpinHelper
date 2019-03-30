@@ -9,60 +9,145 @@ function Piece(cells){
 Piece.fromIndex = function(index){
     var piece;
     switch (index){
-        case 0:// O
-            piece = new Piece([
-                [0x0000AA, 0x0000AA],
-                [0x0000AA, 0x0000AA]
-            ]);
-            break;
-        case 1: // J
-            piece = new Piece([
-                [0xC0C0C0, 0x000000, 0x000000],
-                [0xC0C0C0, 0xC0C0C0, 0xC0C0C0],
-                [0x000000, 0x000000, 0x000000]
-            ]);
-            break;
-        case 2: // L
-            piece = new Piece([
-                [0x000000, 0x000000, 0xAA00AA],
-                [0xAA00AA, 0xAA00AA, 0xAA00AA],
-                [0x000000, 0x000000, 0x000000]
-            ]);
-            break;
-        case 3: // Z
-            piece = new Piece([
-                [0x00AAAA, 0x00AAAA, 0x000000],
-                [0x000000, 0x00AAAA, 0x00AAAA],
-                [0x000000, 0x000000, 0x000000]
-            ]);
-            break;
-        case 4: // S
-            piece = new Piece([
-                [0x000000, 0x00AA00, 0x00AA00],
-                [0x00AA00, 0x00AA00, 0x000000],
-                [0x000000, 0x000000, 0x000000]
-            ]);
-            break;
-        case 5: // T
-            piece = new Piece([
-                [0x000000, 0xAA5500, 0x000000],
-                [0xAA5500, 0xAA5500, 0xAA5500],
-                [0x000000, 0x000000, 0x000000]
-            ]);
-            break;
-        case 6: // I
-            piece = new Piece([
-                [0x000000, 0x000000, 0x000000, 0x000000],
-                [0xAA0000, 0xAA0000, 0xAA0000, 0xAA0000],
-                [0x000000, 0x000000, 0x000000, 0x000000],
-                [0x000000, 0x000000, 0x000000, 0x000000]
-            ]);
-            break;
+      case 0:// O
+          piece = new Piece([
+              [0x0000AA, 0x0000AA],
+              [0x0000AA, 0x0000AA]
+          ]);
+          break;
+      case 1: // J
+          piece = new Piece([
+              [0xC0C0C0, 0x000000, 0x000000],
+              [0xC0C0C0, 0xC0C0C0, 0xC0C0C0],
+              [0x000000, 0x000000, 0x000000]
+          ]);
+          break;
+      case 2: // L
+          piece = new Piece([
+              [0x000000, 0x000000, 0xAA00AA],
+              [0xAA00AA, 0xAA00AA, 0xAA00AA],
+              [0x000000, 0x000000, 0x000000]
+          ]);
+          break;
+      case 3: // Z
+          piece = new Piece([
+              [0x00AAAA, 0x00AAAA, 0x000000],
+              [0x000000, 0x00AAAA, 0x00AAAA],
+              [0x000000, 0x000000, 0x000000]
+          ]);
+          break;
+      case 4: // S
+          piece = new Piece([
+              [0x000000, 0x00AA00, 0x00AA00],
+              [0x00AA00, 0x00AA00, 0x000000],
+              [0x000000, 0x000000, 0x000000]
+          ]);
+          break;
+      case 5: // T
+          piece = new Piece([
+              [0x000000, 0xAA5500, 0x000000],
+              [0xAA5500, 0xAA5500, 0xAA5500],
+              [0x000000, 0x000000, 0x000000]
+          ]);
+          break;
+      case 6: // I
+          piece = new Piece([
+              [0x000000, 0x000000, 0x000000, 0x000000],
+              [0xAA0000, 0xAA0000, 0xAA0000, 0xAA0000],
+              [0x000000, 0x000000, 0x000000, 0x000000],
+              [0x000000, 0x000000, 0x000000, 0x000000]
+          ]);
+          break;
 
     }
     piece.row = 0;
     piece.column = Math.floor((10 - piece.dimension) / 2); // Centralize
     return piece;
+};
+
+/*
+var ghostO =
+[
+    [0xD3D3D3, 0xD3D3D3],
+    [0xD3D3D3, 0xD3D3D3]
+];
+var ghostJ =
+[
+    [0xD3D3D3, 0x000000, 0x000000],
+    [0xD3D3D3, 0xD3D3D3, 0xD3D3D3],
+    [0x000000, 0x000000, 0x000000]
+];
+var ghostL =
+[
+    [0x000000, 0x000000, 0xD3D3D3],
+    [0xD3D3D3, 0xD3D3D3, 0xD3D3D3],
+    [0x000000, 0x000000, 0x000000]
+];
+var ghostZ =
+[
+    [0xD3D3D3, 0xD3D3D3, 0x000000],
+    [0x000000, 0xD3D3D3, 0xD3D3D3],
+    [0x000000, 0x000000, 0x000000]
+];
+var ghostS =
+[
+    [0x000000, 0xD3D3D3, 0xD3D3D3],
+    [0xD3D3D3, 0xD3D3D3, 0x000000],
+    [0x000000, 0x000000, 0x000000]
+];
+var ghostT =
+[
+    [0x000000, 0xD3D3D3, 0x000000],
+    [0xD3D3D3, 0xD3D3D3, 0xD3D3D3],
+    [0x000000, 0x000000, 0x000000]
+];
+var ghostI =
+[
+    [0x000000, 0x000000, 0x000000, 0x000000],
+    [0xD3D3D3, 0xD3D3D3, 0xD3D3D3, 0xD3D3D3],
+    [0x000000, 0x000000, 0x000000, 0x000000],
+    [0x000000, 0x000000, 0x000000, 0x000000]
+];
+*/
+/*
+Piece.ghostPiece = function(letter, row, col) {
+  var piece;
+  switch(letter) {
+    case 'O':// O
+        piece = new Piece(ghostO);
+        break;
+    case 'J': // J
+        piece = new Piece(ghostJ);
+        break;
+    case 'L': // L
+        piece = new Piece(ghostL);
+        break;
+    case 'Z': // Z
+        piece = new Piece(ghostZ);
+        break;
+    case 'S': // S
+        piece = new Piece(ghostS);
+        break;
+    case 'T': // T
+        piece = new Piece(ghostT);
+        break;
+    case 'I': // I
+        piece = new Piece(ghostI);
+        break;
+  }
+  piece.row = row;
+  piece.col = col;
+  return piece;
+};
+*/
+
+Piece.ghostPiece = function(row, col) {
+  var piece = new Piece([
+      [0xD3D3D3]
+  ]);
+  piece.row = row;
+  piece.col = col;
+  return piece;
 };
 
 Piece.prototype.clone = function(){
