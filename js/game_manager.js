@@ -8,6 +8,7 @@ function GameManager(){
     var holdCanvas = document.getElementById('hold-canvas');
     var scoreContainer = document.getElementById("score-container");
     var resetButton = document.getElementById('reset-button');
+    var startButton = document.getElementById('start-button');
     var gridContext = gridCanvas.getContext('2d');
     var nextContext = nextCanvas.getContext('2d');
     var nextContext2 = nextCanvas2.getContext('2d');
@@ -64,13 +65,15 @@ function GameManager(){
       }
 
       // Draw working piece
-      for(var r = 0; r < workingPiece.dimension; r++){
-        for(var c = 0; c < workingPiece.dimension; c++){
-          if (workingPiece.cells[r][c] != 0){
-            gridContext.fillStyle = intToRGBHexString(workingPiece.cells[r][c]);
-            gridContext.fillRect(20 * (c + workingPiece.column), 20 * ((r + workingPiece.row) - 2) + workingPieceVerticalOffset, 20, 20);
-            gridContext.strokeStyle="#FFFFFF";
-            gridContext.strokeRect(20 * (c + workingPiece.column), 20 * ((r + workingPiece.row) - 2) + workingPieceVerticalOffset, 20, 20);
+      if (workingPiece != null) {
+        for(var r = 0; r < workingPiece.dimension; r++){
+          for(var c = 0; c < workingPiece.dimension; c++){
+            if (workingPiece.cells[r][c] != 0){
+              gridContext.fillStyle = intToRGBHexString(workingPiece.cells[r][c]);
+              gridContext.fillRect(20 * (c + workingPiece.column), 20 * ((r + workingPiece.row) - 2) + workingPieceVerticalOffset, 20, 20);
+              gridContext.strokeStyle="#FFFFFF";
+              gridContext.strokeRect(20 * (c + workingPiece.column), 20 * ((r + workingPiece.row) - 2) + workingPieceVerticalOffset, 20, 20);
+            }
           }
         }
       }
@@ -84,6 +87,9 @@ function GameManager(){
           nextContexts[i].save();
           nextContexts[i].clearRect(0, 0, nextCanvas.width, nextCanvas.height);
           var next = workingPieces[1];
+          if (next == null) {
+            continue;
+          }
           var xOffset = next.dimension == 2 ? 20 : next.dimension == 3 ? 10 : next.dimension == 4 ? 0 : null;
           var yOffset = next.dimension == 2 ? 20 : next.dimension == 3 ? 20 : next.dimension == 4 ? 10 : null;
           for(var r = 0; r < next.dimension; r++){
@@ -102,6 +108,9 @@ function GameManager(){
           nextContexts[i].save();
           nextContexts[i].clearRect(0, 0, nextCanvas2.width, nextCanvas2.height);
           var next = workingPieces[i+1];
+          if (next == null) {
+            continue;
+          }
           var xOffset = next.dimension == 2 ? 10 : next.dimension == 3 ? 5 : next.dimension == 4 ? 0 : null;
           var yOffset = next.dimension == 2 ? 10 : next.dimension == 3 ? 5 : next.dimension == 4 ? 5 : null;
           for(var r = 0; r < next.dimension; r++){
@@ -130,17 +139,19 @@ function GameManager(){
         holdContext.save();
 
         holdContext.clearRect(0, 0, holdCanvas.width, holdCanvas.height);
-        var xOffset = holdPiece.dimension == 2 ? 20 : holdPiece.dimension == 3 ? 10 : holdPiece.dimension == 4 ? 0 : null;
-        var yOffset = holdPiece.dimension == 2 ? 20 : holdPiece.dimension == 3 ? 20 : holdPiece.dimension == 4 ? 10 : null;
-        for(var r = 0; r < holdPiece.dimension; r++){
-            for(var c = 0; c < holdPiece.dimension; c++){
-                if (holdPiece.cells[r][c] != 0){
-                    holdContext.fillStyle = intToRGBHexString(holdPiece.cells[r][c]);
-                    holdContext.fillRect(xOffset + 20 * c, yOffset + 20 * r, 20, 20);
-                    holdContext.strokeStyle = "#FFFFFF";
-                    holdContext.strokeRect(xOffset + 20 * c, yOffset + 20 * r, 20, 20);
-                }
-            }
+        if (holdPiece != null) {
+          var xOffset = holdPiece.dimension == 2 ? 20 : holdPiece.dimension == 3 ? 10 : holdPiece.dimension == 4 ? 0 : null;
+          var yOffset = holdPiece.dimension == 2 ? 20 : holdPiece.dimension == 3 ? 20 : holdPiece.dimension == 4 ? 10 : null;
+          for(var r = 0; r < holdPiece.dimension; r++){
+              for(var c = 0; c < holdPiece.dimension; c++){
+                  if (holdPiece.cells[r][c] != 0){
+                      holdContext.fillStyle = intToRGBHexString(holdPiece.cells[r][c]);
+                      holdContext.fillRect(xOffset + 20 * c, yOffset + 20 * r, 20, 20);
+                      holdContext.strokeStyle = "#FFFFFF";
+                      holdContext.strokeRect(xOffset + 20 * c, yOffset + 20 * r, 20, 20);
+                  }
+              }
+          }
         }
 
         holdContext.restore();
@@ -247,7 +258,8 @@ function GameManager(){
         }
         switch(event.which){
             case 16: // shift
-              if (this.isPaused) {
+              if (isPaused) {
+                 console.log('here');
                 break;
               }
               if (!hold) {
@@ -259,6 +271,7 @@ function GameManager(){
                     workingPiece.column = Math.floor((10 - workingPiece.dimension) / 2); // Centralize
                 }
                 else {
+                    console.log('hiii');
                     holdPiece = workingPieces[0];
                     workingPiece = workingPieces[1];
                     workingPieces[1] = rpg.nextPiece();
@@ -273,13 +286,13 @@ function GameManager(){
               }
             break;
             case 80: // p
-              if (!this.isPaused) {
+              if (!isPaused) {
                 gravityTimer.pause();
-                this.isPaused = true;
+                isPaused = true;
                 pausedText.hidden = false;
               } else {
                 gravityTimer.unPause();
-                this.isPaused = false;
+                isPaused = false;
                 pausedText.hidden = true;
               }
               break;
@@ -322,13 +335,26 @@ function GameManager(){
         cancelWorkingPieceDropAnimation();
         grid = new Grid(22, 10);
         rpg = new RandomPieceGenerator();
-        workingPieces = [null, rpg.nextPiece(), rpg.nextPiece(), rpg.nextPiece(), rpg.nextPiece(), rpg.nextPiece()];
+        workingPieces = [null, null, null, null, null, null];
         workingPiece = null;
         score = 0;
         isKeyEnabled = true;
         updateScoreContainer();
-        startTurn();
+        holdPiece = null;
+        gravityTimer.unPause();
+        isPaused = false;
+        pausedText.hidden = true;
+
+        startButton.disabled = false;
+        redrawGridCanvas();
+        redrawNextCanvas();
+        redrawHoldCanvas();
     }
 
-    startTurn();
+    startButton.onclick = function() {
+      workingPieces = [null, rpg.nextPiece(), rpg.nextPiece(), rpg.nextPiece(), rpg.nextPiece(), rpg.nextPiece()];
+      workingPiece = null;
+        startButton.disabled = true;
+        startTurn();
+    }
 }
