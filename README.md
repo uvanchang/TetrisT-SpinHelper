@@ -1,12 +1,2 @@
-# Tetris AI
-A graphical interface for Tetris that contains an AI and a tuner for the AI. You can also play it yourself.
-
-## Live Webpage
-The live webpage containing the graphical interface can be found [here](http://leeyiyuan.github.io/tetrisai).
-
-## Tuning
-To tune, open up the Developer Console in the web browser and run the command `new Tuner().tune();`.
-
-## License
-Copyright (C) 2014 - 2017 Yiyuan Lee
-[MIT License](https://github.com/LeeYiyuan/tetrisai/blob/gh-pages/License.md)
+# Tetris T-Spin Helper
+A graphical interface for Tetris that helps the player recognize T-Spin set ups.
