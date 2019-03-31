@@ -42,7 +42,7 @@ Grid.prototype.clearLines = function(){
 
 Grid.prototype.isLine = function(row){
   for(var c = 0; c < this.columns; c++){
-    if (this.cells[row][c] == 0){
+    if (this.cells[row][c] == 0 || this.cells[row][c] == 0xD3D3D3){
       return false;
     }
   }
@@ -51,7 +51,7 @@ Grid.prototype.isLine = function(row){
 
 Grid.prototype.isEmptyRow = function(row){
   for(var c = 0; c < this.columns; c++){
-    if (this.cells[row][c] != 0){
+    if (this.cells[row][c] != 0 && this.cells[row][c] != 0xD3D3D3){
       return false;
     }
   }

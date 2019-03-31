@@ -157,6 +157,16 @@ function GameManager(){
 
   // Process end of turn
   function endTurn(){
+
+    // delete tspin ghost
+    for(var i = 0; i < grid.rows; i++) {
+      for(var j = 0; j < grid.columns; j++) {
+        if(grid.cells[i][j] == 0xD3D3D3) {
+          grid.cells[i][j] = 0;
+        }
+      }
+    }
+
     // Add working piece
     grid.addPiece(workingPiece);
 
