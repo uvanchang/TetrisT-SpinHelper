@@ -129,6 +129,7 @@ var rightAnswers = [
 
 checkWalls = function(grid, workingPieces) {
 
+  // LEFT HALF
   var r = 0;
   for(r = 1; r < grid.rows - 3; r++) {
       // check the 4 x 4 window
@@ -217,7 +218,7 @@ checkWalls = function(grid, workingPieces) {
         //console.log("0: " + rAnswer[0] + " 1: " + r + " + " + rAnswer[1] + " 2: " + c + " + " + rAnswer[2] + " 3: " + rAnswer[3]);
         if(grid.valid(rGhost)) {
           if(right_case == 0) { // fix for right case 0
-            if(r + 4 < grid.rows && grid.cells[r + 4][2] == 0) { // if block is not under the L block
+            if(r + 4 < grid.rows && grid.cells[r + 4][3] == 0) { // if block is not under the L block
               continue;
             }
           }
@@ -226,6 +227,8 @@ checkWalls = function(grid, workingPieces) {
         }
 
       }
+
+      // RIGHT HALF
 
       // check the middle column for right
       failedMiddle = false;
@@ -310,7 +313,7 @@ checkWalls = function(grid, workingPieces) {
         //console.log("0: " + lAnswer[0] + " 1: " + r + " + " + lAnswer[1] + " 2: " + c + " + " + lAnswer[2] + " 3: " + lAnswer[3]);
         if(grid.valid(lGhost)) {
           if(left_case == 0) { // fix for right case 0
-            if(r + 4 < grid.rows && grid.cells[r + 4][5] == 0) { // if block is not under the L block
+            if(r + 4 < grid.rows && grid.cells[r + 4][6] == 0) { // if block is not under the L block
               continue;
             }
           }
