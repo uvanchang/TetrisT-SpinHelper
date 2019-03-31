@@ -16,6 +16,7 @@ function GameManager(){
     var nextContext5 = nextCanvas5.getContext('2d');
     var nextContexts = [nextContext, nextContext2, nextContext3, nextContext4, nextContext5];
     var holdContext = holdCanvas.getContext('2d');
+    var pausedText = document.getElementById("paused-text");
     document.addEventListener('keydown', onKeyDown);
 
     var grid = new Grid(22, 10);
@@ -240,6 +241,9 @@ function GameManager(){
         }
         switch(event.which){
             case 16: // shift
+              if (this.isPaused) {
+                break;
+              }
               if (!hold) {
                 if (holdPiece !== null) {
                     var temp = holdPiece;
@@ -264,11 +268,11 @@ function GameManager(){
               if (!this.isPaused) {
                 gravityTimer.pause();
                 this.isPaused = true;
-                console.log("paused");
+                pausedText.hidden = false;
               } else {
                 gravityTimer.unPause();
                 this.isPaused = false;
-                console.log("unpaused");
+                pausedText.hidden = true;
               }
               break;
             case 32: // spacebar

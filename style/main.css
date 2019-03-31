@@ -21,11 +21,11 @@ hr
     border-bottom: 1px solid #C8C8C8;
 }
 
-.container
+/* .container
 {
     width:350px;
     margin: 0 auto;
-}
+} */
 
 .header
 {
@@ -41,7 +41,7 @@ hr
 
 .grid
 {
-    float:left;
+    float:center;
     background-color: #FFFFFF;
     box-shadow: 0 0 10px 2px #EEEEEE;
     border:1px solid #CCCCCC;
@@ -53,7 +53,14 @@ hr
 
 .controls-container
 {
-    width:130px;
+    width:120px;
+    float:left;
+    height:100%;
+}
+
+.holdControls-container
+{
+    /* width:100px; */
     float:right;
     height:100%;
 }
@@ -92,6 +99,30 @@ hr
     padding:5px;
     margin-top: 10px;
 }
+
+.hold-container
+{
+    background-color: #FFFFFF;
+    box-shadow: 0 0 10px 2px #EEEEEE;
+    text-align: center;
+    color: #FF0000;
+    font-size:25px;
+    border:1px solid #CCCCCC;
+    font-weight: bold;
+    padding:5px;
+    /* margin-top: 10px; */
+}
+
+.hold-container::before
+{
+    content: "Hold";
+    width:100%;
+    float:right;
+    color: #BBBBBB;
+    font-size:15px;
+    font-weight: normal;
+}
+
 .next2-container
 {
     background-color: #FFFFFF;
