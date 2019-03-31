@@ -1,99 +1,150 @@
 function GameManager(){
-  var gridCanvas = document.getElementById('grid-canvas');
-  var nextCanvas = document.getElementById('next-canvas');
-  var scoreContainer = document.getElementById("score-container");
-  var resetButton = document.getElementById('reset-button');
-  var aiButton = document.getElementById('ai-button');
-  var gridContext = gridCanvas.getContext('2d');
-  var nextContext = nextCanvas.getContext('2d');
-  document.addEventListener('keydown', onKeyDown);
+    var gridCanvas = document.getElementById('grid-canvas');
+    var nextCanvas = document.getElementById('next-canvas');
+    var nextCanvas2 = document.getElementById('next-canvas2');
+    var nextCanvas3 = document.getElementById('next-canvas3');
+    var nextCanvas4 = document.getElementById('next-canvas4');
+    var nextCanvas5 = document.getElementById('next-canvas5');
+    var holdCanvas = document.getElementById('hold-canvas');
+    var scoreContainer = document.getElementById("score-container");
+    var resetButton = document.getElementById('reset-button');
+    var gridContext = gridCanvas.getContext('2d');
+    var nextContext = nextCanvas.getContext('2d');
+    var nextContext2 = nextCanvas2.getContext('2d');
+    var nextContext3 = nextCanvas3.getContext('2d');
+    var nextContext4 = nextCanvas4.getContext('2d');
+    var nextContext5 = nextCanvas5.getContext('2d');
+    var nextContexts = [nextContext, nextContext2, nextContext3, nextContext4, nextContext5];
+    var holdContext = holdCanvas.getContext('2d');
+    var pausedText = document.getElementById("paused-text");
+    document.addEventListener('keydown', onKeyDown);
 
-  var grid = new Grid(22, 10);
-  var rpg = new RandomPieceGenerator();
-  var tspin = new Tspin();
-  var ai = new AI(0.510066, 0.760666, 0.35663, 0.184483);
-  var workingPieces = [null, rpg.nextPiece()];
-  var workingPiece = null;
-  var ghostPiece = null;
-  var isAiActive = true;
-  var isKeyEnabled = false;
-  var gravityTimer = new Timer(onGravityTimerTick, 500);
-  var score = 0;
-  var isPaused = false;
+    var grid = new Grid(22, 10);
+    var rpg = new RandomPieceGenerator();
+    var tspin = new Tspin();
+    var workingPieces = [null, rpg.nextPiece(), rpg.nextPiece(), rpg.nextPiece(), rpg.nextPiece(), rpg.nextPiece()];
+    var workingPiece = null;
+    var ghostPiece = null;
+    var isKeyEnabled = false;
+    var gravityTimer = new Timer(onGravityTimerTick, 500);
+    var score = 0;
+    var isPaused = false;
+    var hold = false;
+    var holdPiece = null;
 
-  // Graphics
-  function intToRGBHexString(v){
-    return 'rgb(' + ((v >> 16) & 0xFF) + ',' + ((v >> 8) & 0xFF) + ',' + (v & 0xFF) + ')';
-  }
+    // Graphics
+    function intToRGBHexString(v){
+        return 'rgb(' + ((v >> 16) & 0xFF) + ',' + ((v >> 8) & 0xFF) + ',' + (v & 0xFF) + ')';
+    }
 
-  function redrawGridCanvas(workingPieceVerticalOffset = 0){
-    gridContext.save();
+    function redrawGridCanvas(workingPieceVerticalOffset = 0){
+      gridContext.save();
 
-    // Clear
-    gridContext.clearRect(0, 0, gridCanvas.width, gridCanvas.height);
+      // Clear
+      gridContext.clearRect(0, 0, gridCanvas.width, gridCanvas.height);
 
-    // Draw grid
-    for(var r = 2; r < grid.rows; r++){
-      for(var c = 0; c < grid.columns; c++){
-        if (grid.cells[r][c] != 0){
-          if (grid.cells[r][c] == 0xD3D3D3){
-            //gridContext.strokeRect(0, 0, gridCanvas.width, gridCanvas.height);
-            gridContext.fillStyle= intToRGBHexString(0x000000);
-            gridContext.fillRect(20 * c, 20 * (r - 2), 20, 20);
-            gridContext.strokeStyle="#FFFFFF";
-            gridContext.strokeRect(20 * c, 20 * (r - 2), 20, 20);
-          } else {
-            gridContext.fillStyle= intToRGBHexString(grid.cells[r][c]);
-            gridContext.fillRect(20 * c, 20 * (r - 2), 20, 20);
-            gridContext.strokeStyle="#FFFFFF";
-            gridContext.strokeRect(20 * c, 20 * (r - 2), 20, 20);
+      // Draw grid
+      for(var r = 2; r < grid.rows; r++){
+        for(var c = 0; c < grid.columns; c++){
+          if (grid.cells[r][c] != 0){
+            if (grid.cells[r][c] == 0xD3D3D3){
+              //gridContext.strokeRect(0, 0, gridCanvas.width, gridCanvas.height);
+              gridContext.fillStyle= intToRGBHexString(0x000000);
+              gridContext.fillRect(20 * c, 20 * (r - 2), 20, 20);
+              gridContext.strokeStyle="#FFFFFF";
+              gridContext.strokeRect(20 * c, 20 * (r - 2), 20, 20);
+            } else {
+              gridContext.fillStyle= intToRGBHexString(grid.cells[r][c]);
+              gridContext.fillRect(20 * c, 20 * (r - 2), 20, 20);
+              gridContext.strokeStyle="#FFFFFF";
+              gridContext.strokeRect(20 * c, 20 * (r - 2), 20, 20);
+            }
           }
         }
       }
-    }
 
-    // Draw working piece
-    for(var r = 0; r < workingPiece.dimension; r++){
-      for(var c = 0; c < workingPiece.dimension; c++){
-        if (workingPiece.cells[r][c] != 0){
-          gridContext.fillStyle = intToRGBHexString(workingPiece.cells[r][c]);
-          gridContext.fillRect(20 * (c + workingPiece.column), 20 * ((r + workingPiece.row) - 2) + workingPieceVerticalOffset, 20, 20);
-          gridContext.strokeStyle="#FFFFFF";
-          gridContext.strokeRect(20 * (c + workingPiece.column), 20 * ((r + workingPiece.row) - 2) + workingPieceVerticalOffset, 20, 20);
+      // Draw working piece
+      for(var r = 0; r < workingPiece.dimension; r++){
+        for(var c = 0; c < workingPiece.dimension; c++){
+          if (workingPiece.cells[r][c] != 0){
+            gridContext.fillStyle = intToRGBHexString(workingPiece.cells[r][c]);
+            gridContext.fillRect(20 * (c + workingPiece.column), 20 * ((r + workingPiece.row) - 2) + workingPieceVerticalOffset, 20, 20);
+            gridContext.strokeStyle="#FFFFFF";
+            gridContext.strokeRect(20 * (c + workingPiece.column), 20 * ((r + workingPiece.row) - 2) + workingPieceVerticalOffset, 20, 20);
+          }
+        }
+      }
+
+      gridContext.restore();
+  }
+
+    function redrawNextCanvas(){
+      for (var i = 0; i < nextContexts.length; i++) {
+        if (i == 0) { // Next Piece
+          nextContexts[i].save();
+          nextContexts[i].clearRect(0, 0, nextCanvas.width, nextCanvas.height);
+          var next = workingPieces[1];
+          var xOffset = next.dimension == 2 ? 20 : next.dimension == 3 ? 10 : next.dimension == 4 ? 0 : null;
+          var yOffset = next.dimension == 2 ? 20 : next.dimension == 3 ? 20 : next.dimension == 4 ? 10 : null;
+          for(var r = 0; r < next.dimension; r++){
+              for(var c = 0; c < next.dimension; c++){
+                  if (next.cells[r][c] != 0){
+                      nextContext.fillStyle = intToRGBHexString(next.cells[r][c]);
+                      nextContext.fillRect(xOffset + 20 * c, yOffset + 20 * r, 20, 20);
+                      nextContext.strokeStyle = "#FFFFFF";
+                      nextContext.strokeRect(xOffset + 20 * c, yOffset + 20 * r, 20, 20);
+                  }
+              }
+          }
+          nextContexts[i].restore();
+        }
+        else { // More next pieces
+          nextContexts[i].save();
+          nextContexts[i].clearRect(0, 0, nextCanvas2.width, nextCanvas2.height);
+          var next = workingPieces[i+1];
+          var xOffset = next.dimension == 2 ? 10 : next.dimension == 3 ? 5 : next.dimension == 4 ? 0 : null;
+          var yOffset = next.dimension == 2 ? 10 : next.dimension == 3 ? 5 : next.dimension == 4 ? 5 : null;
+          for(var r = 0; r < next.dimension; r++){
+              for(var c = 0; c < next.dimension; c++){
+                  if (next.cells[r][c] != 0){
+                      nextContexts[i].fillStyle = intToRGBHexString(next.cells[r][c]);
+                      nextContexts[i].fillRect(xOffset + 10 * c, yOffset + 10 * r, 10, 10);
+                      nextContexts[i].strokeStyle = "#FFFFFF";
+                      nextContexts[i].strokeRect(xOffset + 10 * c, yOffset + 10 * r, 10, 10);
+                  }
+              }
+          }
+          nextContexts[i].restore();
         }
       }
     }
 
-    gridContext.restore();
-  }
-
-  function redrawNextCanvas(){
-    nextContext.save();
-
-    nextContext.clearRect(0, 0, nextCanvas.width, nextCanvas.height);
-    var next = workingPieces[1];
-    var xOffset = next.dimension == 2 ? 20 : next.dimension == 3 ? 10 : next.dimension == 4 ? 0 : null;
-    var yOffset = next.dimension == 2 ? 20 : next.dimension == 3 ? 20 : next.dimension == 4 ? 10 : null;
-    for(var r = 0; r < next.dimension; r++){
-      for(var c = 0; c < next.dimension; c++){
-        if (next.cells[r][c] != 0){
-          nextContext.fillStyle = intToRGBHexString(next.cells[r][c]);
-          nextContext.fillRect(xOffset + 20 * c, yOffset + 20 * r, 20, 20);
-          nextContext.strokeStyle = "#FFFFFF";
-          nextContext.strokeRect(xOffset + 20 * c, yOffset + 20 * r, 20, 20);
-        }
-      }
+    function updateScoreContainer(){
+        scoreContainer.innerHTML = score.toString();
     }
 
-    nextContext.restore();
-  }
+    // Drop animation
+    var workingPieceDropAnimationStopwatch = null;
 
-  function updateScoreContainer(){
-    scoreContainer.innerHTML = score.toString();
-  }
+    function redrawHoldCanvas() {
+        holdContext.save();
 
-  // Drop animation
-  var workingPieceDropAnimationStopwatch = null;
+        holdContext.clearRect(0, 0, holdCanvas.width, holdCanvas.height);
+        var xOffset = holdPiece.dimension == 2 ? 20 : holdPiece.dimension == 3 ? 10 : holdPiece.dimension == 4 ? 0 : null;
+        var yOffset = holdPiece.dimension == 2 ? 20 : holdPiece.dimension == 3 ? 20 : holdPiece.dimension == 4 ? 10 : null;
+        for(var r = 0; r < holdPiece.dimension; r++){
+            for(var c = 0; c < holdPiece.dimension; c++){
+                if (holdPiece.cells[r][c] != 0){
+                    holdContext.fillStyle = intToRGBHexString(holdPiece.cells[r][c]);
+                    holdContext.fillRect(xOffset + 20 * c, yOffset + 20 * r, 20, 20);
+                    holdContext.strokeStyle = "#FFFFFF";
+                    holdContext.strokeRect(xOffset + 20 * c, yOffset + 20 * r, 20, 20);
+                }
+            }
+        }
+
+        holdContext.restore();
+    }
 
   function startWorkingPieceDropAnimation(callback = function(){}){
     // Calculate animation height
@@ -127,6 +178,7 @@ function GameManager(){
 
   // Process start of turn
   function startTurn(){
+    hold = false;
     // Shift working pieces
     for(var i = 0; i < workingPieces.length - 1; i++){
       workingPieces[i] = workingPieces[i + 1];
@@ -138,21 +190,8 @@ function GameManager(){
     redrawGridCanvas();
     redrawNextCanvas();
 
-    if(isAiActive){
-      isKeyEnabled = false;
-      workingPiece = ai.best(grid, workingPieces);
-      startWorkingPieceDropAnimation(function(){
-        while(workingPiece.moveDown(grid)); // Drop working piece
-        if(!endTurn()){
-          alert('Game Over!');
-          return;
-        }
-        startTurn();
-      })
-    }else{
-      isKeyEnabled = true;
-      gravityTimer.resetForward(500);
-    }
+    isKeyEnabled = true;
+    gravityTimer.resetForward(500);
   }
 
   // Process end of turn
@@ -210,91 +249,96 @@ function GameManager(){
     startTurn();
   }
 
-  // Process keys
-  function onKeyDown(event){
-    if(!isKeyEnabled){
-      return;
-    }
-    switch(event.which){
-      case 80: // p
-      if (!this.isPaused) {
-        gravityTimer.pause();
-        this.isPaused = true;
-        console.log("paused");
-      } else {
-        gravityTimer.unPause();
-        this.isPaused = false;
-        console.log("unpaused");
-      }
-      break;
-      case 32: // spacebar
-      isKeyEnabled = false;
-      gravityTimer.stop(); // Stop gravity
-      startWorkingPieceDropAnimation(function(){ // Start drop animation
-        while(workingPiece.moveDown(grid)); // Drop working piece
-        if(!endTurn()){
-          alert('Game Over!');
-          return;
+
+    // Process keys
+    function onKeyDown(event){
+        if(!isKeyEnabled){
+            return;
         }
-        startTurn();
-      });
-      break;
-      case 40: // down
-      gravityTimer.resetForward(500);
-      break;
-      case 37: //left
-      if(workingPiece.canMoveLeft(grid)){
-        workingPiece.moveLeft(grid);
-        redrawGridCanvas();
-      }
-      break;
-      case 39: //right
-      if(workingPiece.canMoveRight(grid)){
-        workingPiece.moveRight(grid);
-        redrawGridCanvas();
-      }
-      break;
-      case 38: //up
-      workingPiece.rotate(grid);
-      redrawGridCanvas();
-      break;
-    }
-  }
-
-  aiButton.onclick = function(){
-    if (isAiActive){
-      isAiActive = false;
-      aiButton.style.backgroundColor = "#f9f9f9";
-    }else{
-      isAiActive = true;
-      aiButton.style.backgroundColor = "#e9e9ff";
-
-      isKeyEnabled = false;
-      gravityTimer.stop();
-      startWorkingPieceDropAnimation(function(){ // Start drop animation
-        while(workingPiece.moveDown(grid)); // Drop working piece
-        if(!endTurn()){
-          alert('Game Over!');
-          return;
+        switch(event.which){
+            case 16: // shift
+              if (this.isPaused) {
+                break;
+              }
+              if (!hold) {
+                if (holdPiece !== null) {
+                    var temp = holdPiece;
+                    holdPiece = workingPiece;
+                    workingPiece = temp;
+                    workingPiece.row = 0;
+                    workingPiece.column = Math.floor((10 - workingPiece.dimension) / 2); // Centralize
+                }
+                else {
+                    holdPiece = workingPieces[0];
+                    workingPiece = workingPieces[1];
+                    workingPieces[1] = rpg.nextPiece();
+                }
+                redrawNextCanvas();
+                redrawGridCanvas();
+                redrawHoldCanvas();
+                hold = true;
+              }
+              else {
+                  alert("Only 1 hold!");
+              }
+            break;
+            case 80: // p
+              if (!this.isPaused) {
+                gravityTimer.pause();
+                this.isPaused = true;
+                pausedText.hidden = false;
+              } else {
+                gravityTimer.unPause();
+                this.isPaused = false;
+                pausedText.hidden = true;
+              }
+              break;
+            case 32: // spacebar
+                isKeyEnabled = false;
+                gravityTimer.stop(); // Stop gravity
+                startWorkingPieceDropAnimation(function(){ // Start drop animation
+                    while(workingPiece.moveDown(grid)); // Drop working piece
+                    if(!endTurn()){
+                        alert('Game Over!');
+                        return;
+                    }
+                    startTurn();
+                });
+                break;
+            case 40: // down
+                gravityTimer.resetForward(500);
+                break;
+            case 37: //left
+                if(workingPiece.canMoveLeft(grid)){
+                    workingPiece.moveLeft(grid);
+                    redrawGridCanvas();
+                }
+                break;
+            case 39: //right
+                if(workingPiece.canMoveRight(grid)){
+                    workingPiece.moveRight(grid);
+                    redrawGridCanvas();
+                }
+                break;
+            case 38: //up
+                workingPiece.rotate(grid);
+                redrawGridCanvas();
+                break;
         }
-        startTurn();
-      });
     }
-  }
 
-  resetButton.onclick = function(){
-    gravityTimer.stop();
-    cancelWorkingPieceDropAnimation();
-    grid = new Grid(22, 10);
-    rpg = new RandomPieceGenerator();
-    workingPieces = [null, rpg.nextPiece()];
-    workingPiece = null;
-    score = 0;
-    isKeyEnabled = true;
-    updateScoreContainer();
+    resetButton.onclick = function(){
+        gravityTimer.stop();
+        cancelWorkingPieceDropAnimation();
+        grid = new Grid(22, 10);
+        rpg = new RandomPieceGenerator();
+        workingPieces = [null, rpg.nextPiece(), rpg.nextPiece(), rpg.nextPiece(), rpg.nextPiece(), rpg.nextPiece()];
+        workingPiece = null;
+        score = 0;
+        isKeyEnabled = true;
+        updateScoreContainer();
+        startTurn();
+    }
+
     startTurn();
-  }
-
-  aiButton.style.backgroundColor = "#e9e9ff";
-  startTurn();
 }

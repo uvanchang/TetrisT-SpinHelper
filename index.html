@@ -3,29 +3,52 @@
 <head lang="en">
     <meta charset="UTF-8">
     <title>Tetris AI</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link href="style/main.css" rel="stylesheet" type="text/css">
 </head>
 <body>
 <div id="fb-root"></div>
-<div class="container">
-    <h1 class="header">Tetris AI</h1>
 
-    <div class="game-container">
-        <canvas width="200px" height="400px" id="grid-canvas" class="grid"></canvas>
-        <div class="controls-container">
-            <div id="score-container" class="score-container">0</div>
-            <div id="next-container" class="next-container">
-                <canvas id="next-canvas" class="next-canvas" width="80px" height="80px"></canvas>
+<div class="container" align="center" >
+    <h1>Tetris T-Spin</h1>
+        <div class="row">
+          <div class="col">
+            <div class="holdControls-container">
+              <div id="hold-container" class="hold-container">
+                  <canvas id="hold-canvas" class="next-canvas" width="80px" height="80px"></canvas>
+              </div>
+              <hr>
+              <h3 id="paused-text" hidden="true"> Paused </h3>
             </div>
-            <a id="ai-button" class="start-ai-button">Run AI</a>
-            <a id="reset-button" class="reset-button">Reset</a>
-            <h4> Press p to pause </h4>
-        </div>
+          </div>
+          <div class="col">
+            <div class="container">
+              <canvas width="200px" height="400px" id="grid-canvas" class="grid"></canvas>
+            </div>
+          </div>
+          <div class="col">
+            <div class="controls-container">
+                <div id="score-container" class="score-container">0</div>
+                <div id="next-container" class="next-container">
+                    <canvas id="next-canvas" class="next-canvas" width="80px" height="80px"></canvas>
+                </div>
+                <div id="next-container" class="next2-container">
+                    <canvas id="next-canvas2" class="next-canvas" width="40px" height="30px"></canvas>
+                </div>
+                <div id="next-container" class="next2-container">
+                    <canvas id="next-canvas3" class="next-canvas" width="40px" height="30px"></canvas>
+                </div>
+                <div id="next-container" class="next2-container">
+                    <canvas id="next-canvas4" class="next-canvas" width="40px" height="30px"></canvas>
+                </div>
+                <div id="next-container" class="next2-container">
+                    <canvas id="next-canvas5" class="next-canvas" width="40px" height="30px"></canvas>
+                </div>
+            </div>
+          </div>
     </div>
-    <hr>
-    <div class="footer">
-        <p>Created by <a href="http://codemyroad.wordpress.com" target="#">Yiyuan Lee</a>. Read more about the AI <a href="http://codemyroad.wordpress.com/2013/04/14/tetris-ai-the-near-perfect-player/" target="#">here</a>.</p>
-    </div>
+        <a id="reset-button" type="button" class="btn btn-primary">Reset</a>
+        <i><p>*Press p to pause*</p></i>
 </div>
 
 <script src="js/polyfill.js"></script>
@@ -50,5 +73,8 @@
   ga('create', 'UA-68147157-4', 'auto');
   ga('send', 'pageview');
 </script>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 </body>
 </html>
