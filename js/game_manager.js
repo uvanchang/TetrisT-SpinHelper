@@ -249,6 +249,8 @@ function GameManager(){
                     var temp = holdPiece;
                     holdPiece = workingPiece;
                     workingPiece = temp;
+                    workingPiece.row = 0;
+                    workingPiece.column = Math.floor((10 - workingPiece.dimension) / 2); // Centralize
                 }
                 else {
                     holdPiece = workingPieces[0];
