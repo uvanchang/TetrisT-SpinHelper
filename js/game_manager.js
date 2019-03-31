@@ -213,7 +213,7 @@ function GameManager(){
     score += grid.clearLines();
 
     // Check for tspin opportunity
-    if (tspin.checkOpp(grid)) {
+    if (tspin.checkOpp(grid, workingPieces)) {
       console.log("opportunity found");
     }
 
