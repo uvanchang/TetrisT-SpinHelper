@@ -299,7 +299,7 @@ Tspin.prototype.checkOpp = function(grid) {
         console.log("0: " + rAnswer[0] + " 1: " + r + " + " + rAnswer[1] + " 2: " + c + " + " + rAnswer[2] + " 3: " + rAnswer[3]);
         if(grid.valid(rGhost)) {
           if(right_case == 0) { // fix for right case 0
-            if(r + 4 < grid.rows && c + 4 < gird.columns && grid.cells[r + 4][c + 4] == 0) { // if block is not under the L block
+            if(r + 4 < grid.rows && c + 4 < grid.columns && grid.cells[r + 4][c + 4] == 0) { // if block is not under the L block
               continue;
             }
           }
