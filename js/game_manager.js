@@ -37,38 +37,46 @@ function GameManager(){
         return 'rgb(' + ((v >> 16) & 0xFF) + ',' + ((v >> 8) & 0xFF) + ',' + (v & 0xFF) + ')';
     }
 
-    // Draw working piece
-    for(var r = 0; r < workingPiece.dimension; r++){
-      for(var c = 0; c < workingPiece.dimension; c++){
-        if (workingPiece.cells[r][c] != 0){
-          gridContext.fillStyle = intToRGBHexString(workingPiece.cells[r][c]);
-          gridContext.fillRect(20 * (c + workingPiece.column), 20 * ((r + workingPiece.row) - 2) + workingPieceVerticalOffset, 20, 20);
-          gridContext.strokeStyle="#FFFFFF";
-          gridContext.strokeRect(20 * (c + workingPiece.column), 20 * ((r + workingPiece.row) - 2) + workingPieceVerticalOffset, 20, 20);
+    function redrawGridCanvas(workingPieceVerticalOffset = 0){
+      gridContext.save();
+
+      // Clear
+      gridContext.clearRect(0, 0, gridCanvas.width, gridCanvas.height);
+
+      // Draw grid
+      for(var r = 2; r < grid.rows; r++){
+        for(var c = 0; c < grid.columns; c++){
+          if (grid.cells[r][c] != 0){
+            if (grid.cells[r][c] == 0xD3D3D3){
+              //gridContext.strokeRect(0, 0, gridCanvas.width, gridCanvas.height);
+              gridContext.fillStyle= intToRGBHexString(0x000000);
+              gridContext.fillRect(20 * c, 20 * (r - 2), 20, 20);
+              gridContext.strokeStyle="#FFFFFF";
+              gridContext.strokeRect(20 * c, 20 * (r - 2), 20, 20);
+            } else {
+              gridContext.fillStyle= intToRGBHexString(grid.cells[r][c]);
+              gridContext.fillRect(20 * c, 20 * (r - 2), 20, 20);
+              gridContext.strokeStyle="#FFFFFF";
+              gridContext.strokeRect(20 * c, 20 * (r - 2), 20, 20);
+            }
+          }
         }
       }
-    }
 
-    gridContext.restore();
+      // Draw working piece
+      for(var r = 0; r < workingPiece.dimension; r++){
+        for(var c = 0; c < workingPiece.dimension; c++){
+          if (workingPiece.cells[r][c] != 0){
+            gridContext.fillStyle = intToRGBHexString(workingPiece.cells[r][c]);
+            gridContext.fillRect(20 * (c + workingPiece.column), 20 * ((r + workingPiece.row) - 2) + workingPieceVerticalOffset, 20, 20);
+            gridContext.strokeStyle="#FFFFFF";
+            gridContext.strokeRect(20 * (c + workingPiece.column), 20 * ((r + workingPiece.row) - 2) + workingPieceVerticalOffset, 20, 20);
+          }
+        }
+      }
+
+      gridContext.restore();
   }
-
-  function redrawNextCanvas(){
-    nextContext.save();
-
-    nextContext.clearRect(0, 0, nextCanvas.width, nextCanvas.height);
-    var next = workingPieces[1];
-    var xOffset = next.dimension == 2 ? 20 : next.dimension == 3 ? 10 : next.dimension == 4 ? 0 : null;
-    var yOffset = next.dimension == 2 ? 20 : next.dimension == 3 ? 20 : next.dimension == 4 ? 10 : null;
-    for(var r = 0; r < next.dimension; r++){
-      for(var c = 0; c < next.dimension; c++){
-        if (next.cells[r][c] != 0){
-          nextContext.fillStyle = intToRGBHexString(next.cells[r][c]);
-          nextContext.fillRect(xOffset + 20 * c, yOffset + 20 * r, 20, 20);
-          nextContext.strokeStyle = "#FFFFFF";
-          nextContext.strokeRect(xOffset + 20 * c, yOffset + 20 * r, 20, 20);
-        }
-      }
-    }
 
     function redrawNextCanvas(){
       for (var i = 0; i < nextContexts.length; i++) {
@@ -110,6 +118,13 @@ function GameManager(){
         }
       }
     }
+
+    function updateScoreContainer(){
+        scoreContainer.innerHTML = score.toString();
+    }
+
+    // Drop animation
+    var workingPieceDropAnimationStopwatch = null;
 
     function redrawHoldCanvas() {
         holdContext.save();
@@ -163,6 +178,7 @@ function GameManager(){
 
   // Process start of turn
   function startTurn(){
+    hold = false;
     // Shift working pieces
     for(var i = 0; i < workingPieces.length - 1; i++){
       workingPieces[i] = workingPieces[i + 1];
